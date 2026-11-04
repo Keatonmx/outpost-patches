@@ -54,7 +54,7 @@
     "title": "Tinbox",
     "kind": "App",
     "platform": "iPhone · iPad",
-    "status": "",
+    "status": "On the App Store",
     "order": 3,
     "summary": "A Game Boy Advance emulator for iPhone and iPad, built on the mGBA core.",
     "description": "Tinbox is a native iOS Game Boy Advance player, with a SwiftUI interface, Metal rendering and the accurate mGBA core underneath.\n\nIt keeps your library tidy, plays in portrait or landscape, and has save states, themes and skins.",
@@ -78,6 +78,7 @@
     "screenshotNote": "The game shown is Tobu Tobu Girl Deluxe, a free homebrew game.",
     "note": "Tinbox doesn't come with any games. Play games you own or free homebrew.",
     "links": [
+      { "label": "Get it on the App Store", "url": "https://apps.apple.com/us/app/tinbox-game-emulator/id6809113803" },
       { "label": "Support & privacy", "url": "https://keatonmx.github.io/tinbox-support/" }
     ]
   },
