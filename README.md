@@ -14,9 +14,10 @@ drive everything:
 | `links.json` | The Links section | `index.html` |
 
 Images live in `projects/<id>/` and `patches/<id>/`. The look (woodsmoke,
-parchment, rust and pine; Alegreya + Pixelify Sans) is all in `assets/site.css`.
-Redfern in the banner and header is the first idle frame of his PixelLab sheet
-from the Godot game.
+parchment, rust and pine; Alegreya + Pixelify Sans; open layout, no boxed cards)
+is all in `assets/site.css`. The banner (`assets/img/banner.png`, a dusk cabin in
+the pines) was made with PixelLab for the site, separate from the game's art, so
+the home page reads as the site's intro rather than the game's.
 
 `incoming/` (git-ignored, never published) is the drop folder for new patch
 files before they're checked and turned into pages.

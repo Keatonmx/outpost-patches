@@ -34,12 +34,18 @@ async function loadProjects() {
   return list.sort((a, b) => (a.order || 99) - (b.order || 99));
 }
 
+/* A dotted line of small facts, e.g. "App · iPhone · On the App Store". */
+function metaLine(parts) {
+  return el("div", { class: "meta" }, parts.filter(([text]) => text)
+    .map(([text, cls]) => el("span", { class: cls, text })));
+}
+
 function badges(p) {
-  return el("div", { class: "meta" }, [
-    p.platform && el("span", { class: "badge platform", text: p.platform }),
-    p.version && el("span", { class: "badge version", text: "v" + p.version }),
-    p.released && el("span", { class: "badge", text: p.released }),
-  ]);
+  return metaLine([[p.platform], [p.version && "v" + p.version, "good"], [p.released]]);
+}
+
+function initials(title) {
+  return String(title || "?").split(/\s+/).slice(0, 2).map((w) => w.charAt(0)).join("").toUpperCase();
 }
 
 function paragraphs(text) {
@@ -72,14 +78,14 @@ function safeUrl(url) {
 
 function patchCard(p) {
   const cover = p.cover || (p.screenshots || [])[0];
-  const thumb = el("div", { class: "thumb" }, cover ? null : document.createTextNode(p.platform || "Patch"));
-  if (cover) thumb.style.backgroundImage = "url(\"" + encodeURI(cover) + "\")";
-  return el("a", { class: "card", href: "patch.html?id=" + encodeURIComponent(p.id) }, [
-    thumb,
-    el("div", { class: "body" }, [
+  return el("a", { class: "item", href: "patch.html?id=" + encodeURIComponent(p.id) }, [
+    cover
+      ? el("img", { class: "thumb shot", src: cover, alt: "" })
+      : el("span", { class: "thumb initials", "aria-hidden": "true", text: initials(p.title) }),
+    el("div", {}, [
       el("h3", { text: p.title }),
       p.game && el("div", { class: "game", text: "for " + p.game }),
-      el("div", { class: "summary", text: p.summary || "" }),
+      el("p", { class: "summary", text: p.summary || "" }),
       badges(p),
     ]),
   ]);
@@ -87,35 +93,36 @@ function patchCard(p) {
 
 /* ---------------- home (index.html) ---------------- */
 
-function projectBadges(p) {
-  return el("div", { class: "meta" }, [
-    p.kind && el("span", { class: "badge kind", text: p.kind }),
-    p.platform && el("span", { class: "badge platform", text: p.platform }),
-    p.status && el("span", { class: "badge status", text: p.status }),
-  ]);
+function projectMeta(p) {
+  return metaLine([[p.kind, "kind"], [p.platform], [p.status, "good"]]);
 }
 
 function projectThumb(p) {
-  if (p.cover && p.coverStyle === "icon") {
-    return el("div", { class: "thumb icon" }, [el("img", { src: p.cover, alt: "" })]);
-  }
-  if (p.cover) {
-    const thumb = el("div", { class: "thumb" });
-    thumb.style.backgroundImage = "url(\"" + encodeURI(p.cover) + "\")";
-    return thumb;
-  }
-  return el("div", { class: "thumb text", text: p.title });
+  if (p.cover && p.coverStyle === "icon") return el("img", { class: "thumb icon", src: p.cover, alt: "" });
+  if (p.cover) return el("img", { class: "thumb shot", src: p.cover, alt: "" });
+  return el("span", { class: "thumb initials", "aria-hidden": "true", text: initials(p.title) });
 }
 
 function projectCard(p) {
-  return el("a", { class: "card" + (p.featured ? " featured" : ""), href: "project.html?id=" + encodeURIComponent(p.id) }, [
+  const href = "project.html?id=" + encodeURIComponent(p.id);
+  if (p.featured && p.cover && p.coverStyle !== "icon") {
+    return el("a", { class: "feature", href }, [
+      el("img", { src: p.cover, alt: p.title }),
+      el("div", {}, [
+        el("div", { class: "eyebrow", text: "The main game" }),
+        el("h3", { text: p.title }),
+        el("p", { class: "summary", text: p.summary || "" }),
+        projectMeta(p),
+        el("div", { class: "more", text: "Take a look →" }),
+      ]),
+    ]);
+  }
+  return el("a", { class: "item", href }, [
     projectThumb(p),
-    el("div", { class: "body" }, [
-      p.featured && el("div", { class: "eyebrow", text: "The main game" }),
+    el("div", {}, [
       el("h3", { text: p.title }),
-      el("div", { class: "summary", text: p.summary || "" }),
-      projectBadges(p),
-      p.featured && el("div", { class: "more", text: "Take a look →" }),
+      el("p", { class: "summary", text: p.summary || "" }),
+      projectMeta(p),
     ]),
   ]);
 }
@@ -124,7 +131,7 @@ function linkCard(link) {
   const url = safeUrl(link.url);
   if (!url) return null;
   const host = new URL(url).host.replace(/^www\./, "");
-  return el("a", { class: "link-card", href: url, target: "_blank", rel: "noopener" }, [
+  return el("a", { class: "link", href: url, target: "_blank", rel: "noopener" }, [
     el("span", { class: "mark", "aria-hidden": "true", text: (link.title || host).trim().charAt(0).toUpperCase() }),
     el("span", {}, [
       el("strong", { text: link.title || host }),
@@ -179,66 +186,57 @@ async function renderProject() {
 
   document.title = project.title + " · " + SITE;
 
-  const head = el("div", { class: "patch-head" }, [
-    el("div", { class: "eyebrow", text: project.kind || "Project" }),
-    el("h1", { text: project.title }),
-    el("div", { class: "game", text: project.summary || "" }),
-    projectBadges(project),
+  const isIcon = project.cover && project.coverStyle === "icon";
+  const head = el("div", { class: "detail-head" }, [
+    isIcon && el("img", { class: "app-icon", src: project.cover, alt: project.title + " icon" }),
+    el("div", {}, [
+      el("div", { class: "eyebrow", text: project.kind || "Project" }),
+      el("h1", { text: project.title }),
+      el("p", { class: "lede", text: project.summary || "" }),
+      metaLine([[project.platform], [project.status, "good"]]),
+    ]),
   ]);
 
   let shots = project.screenshots || [];
   const wide = shots.length && !/\.(jpe?g)$/i.test(shots[0]);
   const parts = [head];
-  if (wide && project.cover && project.coverStyle !== "icon") {
-    parts.push(el("div", { class: "hero-shot" }, [el("img", { src: project.cover, alt: project.title })]));
+  if (wide && project.cover && !isIcon) {
+    parts.push(el("img", { class: "hero-shot", src: project.cover, alt: project.title }));
     shots = shots.filter((src) => src !== project.cover);
   }
 
   const left = el("div", {}, [
-    el("div", { class: "panel" }, [el("h2", { text: "About" }), ...paragraphs(project.description || project.summary)]),
+    el("section", { class: "block" }, [el("h2", { text: "About" }), ...paragraphs(project.description || project.summary)]),
   ]);
 
   if ((project.features || []).length) {
-    left.append(el("div", { class: "panel" }, [
+    left.append(el("section", { class: "block" }, [
       el("h2", { text: "Features" }),
       el("ul", { class: "features" }, project.features.map((f) => el("li", { text: f }))),
     ]));
   }
 
   if (shots.length) {
-    left.append(el("div", { class: "panel" }, [
+    left.append(el("section", { class: "block" }, [
       el("h2", { text: "Screenshots" }),
       el("div", { class: "shots" + (wide ? "" : " tall") }, shots.map((src) =>
         el("img", { src, alt: project.title + " screenshot", onclick: () => openLightbox(src) }))),
-      project.screenshotNote && el("p", { class: "muted", style: "margin-top:12px", text: project.screenshotNote }),
+      project.screenshotNote && el("p", { class: "muted", style: "margin-top:14px", text: project.screenshotNote }),
     ]));
   }
 
-  const right = el("div", {});
-  if (project.cover && project.coverStyle === "icon") {
-    right.append(el("div", { class: "panel", style: "text-align:center" }, [
-      el("img", { src: project.cover, alt: project.title + " icon",
-        style: "width:120px;margin:4px auto 0;border-radius:24%;box-shadow:0 6px 18px rgba(0,0,0,.5)" }),
-    ]));
-  }
-  right.append(el("div", { class: "panel" }, [
-    el("h2", { text: "At a glance" }),
-    el("dl", { class: "facts" }, [
-      el("dt", { text: "Type" }), el("dd", { text: project.kind || "—" }),
-      el("dt", { text: "Runs on" }), el("dd", { text: project.platform || "—" }),
-      project.status && el("dt", { text: "Status" }), project.status && el("dd", { text: project.status }),
-    ]),
-  ]));
-
-  const links = (project.links || []).map((l) => {
+  const right = el("aside", {});
+  const links = (project.links || []).map((l, i) => {
     const url = safeUrl(l.url);
-    return url && el("a", { class: "btn block", href: url, target: "_blank", rel: "noopener", text: l.label || url });
+    return url && el("a", { class: "btn block" + (i === 0 ? " primary" : ""), href: url,
+      target: "_blank", rel: "noopener", text: l.label || url });
   }).filter(Boolean);
-  if (links.length) right.append(el("div", { class: "panel" }, [el("h2", { text: "Links" }), ...links]));
+  if (links.length) right.append(el("div", { class: "block" }, [el("h2", { text: "Links" }), ...links]));
 
-  if (project.note) right.append(el("div", { class: "panel" }, [el("p", { class: "muted", text: project.note })]));
+  if (project.note) right.append(el("div", { class: "block note" }, [el("p", { class: "muted", text: project.note })]));
 
-  parts.push(el("div", { class: "layout" }, [left, right]));
+  const hasSide = right.childElementCount > 0;
+  parts.push(el("div", { class: "layout" + (hasSide ? "" : " single") }, hasSide ? [left, right] : [left]));
   main.replaceChildren(...parts);
 }
 
@@ -302,18 +300,21 @@ async function renderPatch() {
   document.title = patch.title + " · " + SITE + " Patches";
   const fileName = String(patch.file).split("/").pop();
 
-  const head = el("div", { class: "patch-head" }, [
-    el("h1", { text: patch.title }),
-    patch.game && el("div", { class: "game", text: "A patch for " + patch.game }),
-    badges(patch),
+  const head = el("div", { class: "detail-head" }, [
+    el("div", {}, [
+      el("div", { class: "eyebrow", text: "Patch" }),
+      el("h1", { text: patch.title }),
+      patch.game && el("p", { class: "lede", text: "A patch for " + patch.game }),
+      badges(patch),
+    ]),
   ]);
 
   const left = el("div", {}, [
-    el("div", { class: "panel" }, [el("h2", { text: "About" }), ...paragraphs(patch.description || patch.summary)]),
+    el("section", { class: "block" }, [el("h2", { text: "About" }), ...paragraphs(patch.description || patch.summary)]),
   ]);
 
   if ((patch.screenshots || []).length) {
-    left.append(el("div", { class: "panel" }, [
+    left.append(el("section", { class: "block" }, [
       el("h2", { text: "Screenshots" }),
       el("div", { class: "shots" }, patch.screenshots.map((src) =>
         el("img", { src, alt: patch.title + " screenshot", onclick: () => openLightbox(src) }))),
@@ -321,7 +322,7 @@ async function renderPatch() {
   }
 
   if ((patch.changelog || []).length) {
-    left.append(el("div", { class: "panel" }, [
+    left.append(el("section", { class: "block" }, [
       el("h2", { text: "Version history" }),
       el("ul", { class: "changelog" }, patch.changelog.map((c) => el("li", {}, [
         el("span", { class: "ver", text: "v" + c.version }),
@@ -332,7 +333,7 @@ async function renderPatch() {
   }
 
   if (patch.credits) {
-    left.append(el("div", { class: "panel" }, [el("h2", { text: "Credits" }), ...paragraphs(patch.credits)]));
+    left.append(el("section", { class: "block" }, [el("h2", { text: "Credits" }), ...paragraphs(patch.credits)]));
   }
 
   const needs = el("dl", { class: "facts" }, [
@@ -341,19 +342,19 @@ async function renderPatch() {
     patch.baseCrc32 && el("dt", { text: "CRC32" }), patch.baseCrc32 && el("dd", { class: "mono", text: patch.baseCrc32.toLowerCase() }),
   ]);
 
-  const right = el("div", {}, [
-    el("div", { class: "panel" }, [
+  const right = el("aside", {}, [
+    el("section", { class: "block" }, [
       el("h2", { text: "Patch it in your browser" }),
       el("p", { class: "game", text: "Pick your own copy of the original game. Nothing is uploaded; patching happens on your device." }),
       patcherMarkup(),
     ]),
-    el("div", { class: "panel" }, [
+    el("section", { class: "block" }, [
       el("h2", { text: "What you need" }),
       needs,
       el("p", { class: "game", style: "margin-top:12px",
         text: "Your ROM must match exactly. Patches from this site never include the game itself." }),
     ]),
-    el("div", { class: "panel" }, [
+    el("section", { class: "block" }, [
       el("h2", { text: "Prefer to patch yourself?" }),
       el("a", { class: "btn block", href: patch.file, download: fileName, text: "Download patch file" }),
       el("p", { class: "game", style: "margin-top:10px",
