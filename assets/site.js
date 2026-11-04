@@ -1,4 +1,7 @@
-/* Redfern's Outpost — patch site. Reads patches.json; no build step. */
+/* Redfern's Outpost. Pages are drawn from projects.json, patches.json and links.json;
+   no build step. Data is only ever set with textContent, never as HTML. */
+
+const SITE = "Redfern's Outpost";
 
 function el(tag, attrs, children) {
   const node = document.createElement(tag);
@@ -15,11 +18,20 @@ function el(tag, attrs, children) {
   return node;
 }
 
+async function loadJson(name) {
+  const resp = await fetch(name, { cache: "no-cache" });
+  if (!resp.ok) throw new Error("Couldn't load " + name + " (" + resp.status + ")");
+  return resp.json();
+}
+
 async function loadPatches() {
-  const resp = await fetch("patches.json", { cache: "no-cache" });
-  if (!resp.ok) throw new Error("Couldn't load patches.json (" + resp.status + ")");
-  const list = await resp.json();
+  const list = await loadJson("patches.json");
   return list.sort((a, b) => String(b.released || "").localeCompare(String(a.released || "")));
+}
+
+async function loadProjects() {
+  const list = await loadJson("projects.json");
+  return list.sort((a, b) => (a.order || 99) - (b.order || 99));
 }
 
 function badges(p) {
@@ -49,7 +61,188 @@ function showError(where, message) {
   where.replaceChildren(el("div", { class: "empty", text: message }));
 }
 
-/* ---------------- catalog (index.html) ---------------- */
+function safeUrl(url) {
+  try {
+    const u = new URL(url, location.href);
+    return u.protocol === "https:" || u.protocol === "http:" ? u.href : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function patchCard(p) {
+  const cover = p.cover || (p.screenshots || [])[0];
+  const thumb = el("div", { class: "thumb" }, cover ? null : document.createTextNode(p.platform || "Patch"));
+  if (cover) thumb.style.backgroundImage = "url(\"" + encodeURI(cover) + "\")";
+  return el("a", { class: "card", href: "patch.html?id=" + encodeURIComponent(p.id) }, [
+    thumb,
+    el("div", { class: "body" }, [
+      el("h3", { text: p.title }),
+      p.game && el("div", { class: "game", text: "for " + p.game }),
+      el("div", { class: "summary", text: p.summary || "" }),
+      badges(p),
+    ]),
+  ]);
+}
+
+/* ---------------- home (index.html) ---------------- */
+
+function projectBadges(p) {
+  return el("div", { class: "meta" }, [
+    p.kind && el("span", { class: "badge kind", text: p.kind }),
+    p.platform && el("span", { class: "badge platform", text: p.platform }),
+    p.status && el("span", { class: "badge status", text: p.status }),
+  ]);
+}
+
+function projectThumb(p) {
+  if (p.cover && p.coverStyle === "icon") {
+    return el("div", { class: "thumb icon" }, [el("img", { src: p.cover, alt: "" })]);
+  }
+  if (p.cover) {
+    const thumb = el("div", { class: "thumb" });
+    thumb.style.backgroundImage = "url(\"" + encodeURI(p.cover) + "\")";
+    return thumb;
+  }
+  return el("div", { class: "thumb text", text: p.title });
+}
+
+function projectCard(p) {
+  return el("a", { class: "card" + (p.featured ? " featured" : ""), href: "project.html?id=" + encodeURIComponent(p.id) }, [
+    projectThumb(p),
+    el("div", { class: "body" }, [
+      p.featured && el("div", { class: "eyebrow", text: "The main game" }),
+      el("h3", { text: p.title }),
+      el("div", { class: "summary", text: p.summary || "" }),
+      projectBadges(p),
+      p.featured && el("div", { class: "more", text: "Take a look →" }),
+    ]),
+  ]);
+}
+
+function linkCard(link) {
+  const url = safeUrl(link.url);
+  if (!url) return null;
+  const host = new URL(url).host.replace(/^www\./, "");
+  return el("a", { class: "link-card", href: url, target: "_blank", rel: "noopener" }, [
+    el("span", { class: "mark", "aria-hidden": "true", text: (link.title || host).trim().charAt(0).toUpperCase() }),
+    el("span", {}, [
+      el("strong", { text: link.title || host }),
+      el("span", { class: "host", text: host }),
+      link.description && el("span", { class: "desc", text: link.description }),
+    ]),
+  ]);
+}
+
+async function renderHome() {
+  const projectsBox = document.getElementById("projects");
+  const patchesBox = document.getElementById("latest-patches");
+  const linksBox = document.getElementById("links");
+
+  loadProjects()
+    .then((list) => list.length
+      ? projectsBox.replaceChildren(...list.map(projectCard))
+      : showError(projectsBox, "Projects are on the way."))
+    .catch((err) => showError(projectsBox, err.message));
+
+  loadPatches()
+    .then((list) => list.length
+      ? patchesBox.replaceChildren(...list.slice(0, 3).map(patchCard))
+      : showError(patchesBox, "No patches posted yet. They're on the way."))
+    .catch((err) => showError(patchesBox, err.message));
+
+  loadJson("links.json")
+    .then((list) => {
+      const cards = list.map(linkCard).filter(Boolean);
+      if (cards.length) linksBox.replaceChildren(...cards);
+      else showError(linksBox, "No links yet.");
+    })
+    .catch((err) => showError(linksBox, err.message));
+}
+
+/* ---------------- project page (project.html) ---------------- */
+
+async function renderProject() {
+  const main = document.getElementById("project");
+  const id = new URLSearchParams(location.search).get("id");
+  let project;
+  try {
+    project = (await loadProjects()).find((p) => p.id === id);
+  } catch (err) {
+    showError(main, err.message);
+    return;
+  }
+  if (!project) {
+    showError(main, "That project doesn't exist (anymore). Head back to the outpost.");
+    return;
+  }
+
+  document.title = project.title + " · " + SITE;
+
+  const head = el("div", { class: "patch-head" }, [
+    el("div", { class: "eyebrow", text: project.kind || "Project" }),
+    el("h1", { text: project.title }),
+    el("div", { class: "game", text: project.summary || "" }),
+    projectBadges(project),
+  ]);
+
+  let shots = project.screenshots || [];
+  const wide = shots.length && !/\.(jpe?g)$/i.test(shots[0]);
+  const parts = [head];
+  if (wide && project.cover && project.coverStyle !== "icon") {
+    parts.push(el("div", { class: "hero-shot" }, [el("img", { src: project.cover, alt: project.title })]));
+    shots = shots.filter((src) => src !== project.cover);
+  }
+
+  const left = el("div", {}, [
+    el("div", { class: "panel" }, [el("h2", { text: "About" }), ...paragraphs(project.description || project.summary)]),
+  ]);
+
+  if ((project.features || []).length) {
+    left.append(el("div", { class: "panel" }, [
+      el("h2", { text: "Features" }),
+      el("ul", { class: "features" }, project.features.map((f) => el("li", { text: f }))),
+    ]));
+  }
+
+  if (shots.length) {
+    left.append(el("div", { class: "panel" }, [
+      el("h2", { text: "Screenshots" }),
+      el("div", { class: "shots" + (wide ? "" : " tall") }, shots.map((src) =>
+        el("img", { src, alt: project.title + " screenshot", onclick: () => openLightbox(src) }))),
+      project.screenshotNote && el("p", { class: "muted", style: "margin-top:12px", text: project.screenshotNote }),
+    ]));
+  }
+
+  const right = el("div", {});
+  if (project.cover && project.coverStyle === "icon") {
+    right.append(el("div", { class: "panel", style: "text-align:center" }, [
+      el("img", { src: project.cover, alt: project.title + " icon",
+        style: "width:120px;margin:4px auto 0;border-radius:24%;box-shadow:0 6px 18px rgba(0,0,0,.5)" }),
+    ]));
+  }
+  right.append(el("div", { class: "panel" }, [
+    el("h2", { text: "At a glance" }),
+    el("dl", { class: "facts" }, [
+      el("dt", { text: "Type" }), el("dd", { text: project.kind || "—" }),
+      el("dt", { text: "Runs on" }), el("dd", { text: project.platform || "—" }),
+      project.status && el("dt", { text: "Status" }), project.status && el("dd", { text: project.status }),
+    ]),
+  ]));
+
+  const links = (project.links || []).map((l) => {
+    const url = safeUrl(l.url);
+    return url && el("a", { class: "btn block", href: url, target: "_blank", rel: "noopener", text: l.label || url });
+  }).filter(Boolean);
+  if (links.length) right.append(el("div", { class: "panel" }, [el("h2", { text: "Links" }), ...links]));
+
+  if (project.note) right.append(el("div", { class: "panel" }, [el("p", { class: "muted", text: project.note })]));
+
+  parts.push(el("div", { class: "layout" }, [left, right]));
+  main.replaceChildren(...parts);
+}
+
+/* ---------------- patch catalog (patches.html) ---------------- */
 
 async function renderCatalog() {
   const grid = document.getElementById("grid");
@@ -81,20 +274,7 @@ async function renderCatalog() {
       showError(grid, "No patches match that search.");
       return;
     }
-    grid.replaceChildren(...shown.map((p) => {
-      const cover = p.cover || (p.screenshots || [])[0];
-      const thumb = el("div", { class: "thumb" }, cover ? null : document.createTextNode(p.platform || "Patch"));
-      if (cover) thumb.style.backgroundImage = "url(\"" + encodeURI(cover) + "\")";
-      return el("a", { class: "card", href: "patch.html?id=" + encodeURIComponent(p.id) }, [
-        thumb,
-        el("div", { class: "body" }, [
-          el("h3", { text: p.title }),
-          p.game && el("div", { class: "game", text: "for " + p.game }),
-          el("div", { class: "summary", text: p.summary || "" }),
-          badges(p),
-        ]),
-      ]);
-    }));
+    grid.replaceChildren(...shown.map(patchCard));
   }
 
   search.addEventListener("input", draw);
@@ -119,7 +299,7 @@ async function renderPatch() {
     return;
   }
 
-  document.title = patch.title + " · Redfern's Outpost Patches";
+  document.title = patch.title + " · " + SITE + " Patches";
   const fileName = String(patch.file).split("/").pop();
 
   const head = el("div", { class: "patch-head" }, [

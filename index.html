@@ -3,46 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redfern's Outpost · ROM Patches</title>
-<meta name="description" content="Game patches and ROM hacks from Redfern's Outpost. Patch your own copy right in the browser.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23e5484d'/%3E%3C/svg%3E">
+<title>Redfern's Outpost</title>
+<meta name="description" content="Games, apps and patches made at Redfern's Outpost, a little outpost in the pines.">
+<meta property="og:title" content="Redfern's Outpost">
+<meta property="og:description" content="Games, apps and patches made at a little outpost in the pines.">
+<meta property="og:image" content="https://redfernsoutpost.com/projects/redferns-outpost/autumn.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1 13 9H10l3 5H3l3-5H3z' fill='%237fa66f'/%3E%3Crect x='7' y='13' width='2' height='3' fill='%23cf7a3a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700&family=Alegreya+Sans:wght@400;700&family=Pixelify+Sans:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="./"><span class="brand-dot"></span>Redfern's Outpost <span class="brand-sub">Patches</span></a>
-    <nav class="nav"><a href="./">All patches</a><a href="#how">How it works</a></nav>
+    <a class="brand" href="./"><img src="assets/img/redfern.png" alt=""><span>Redfern's Outpost</span></a>
+    <nav class="nav"><a href="#projects-section">Projects</a><a href="patches.html">Patches</a><a href="#links-section">Links</a></nav>
   </div>
 </header>
 
+<section class="banner">
+  <div class="wrap">
+    <div class="eyebrow">Est. in the pines</div>
+    <h1>Redfern's Outpost</h1>
+    <p>Games, apps and patches, made at a little outpost in the pines.</p>
+    <div class="actions">
+      <a class="btn primary" href="#projects-section">See the projects</a>
+      <a class="btn" href="patches.html">Patches</a>
+    </div>
+  </div>
+  <img class="redfern" src="assets/img/redfern.png" alt="Redfern, the mountain man">
+</section>
+
 <main class="wrap">
-  <section class="hero">
-    <h1>Game patches &amp; ROM hacks</h1>
-    <p>Mods, fixes and fan projects for classic games. Pick a patch, choose your own copy of the game, and get the patched version in seconds, right in your browser.</p>
-    <div class="notice">This site hosts <strong>patches only</strong>. It never provides games or ROMs. You'll need your own copy of the original game.</div>
+  <section class="section" id="projects-section">
+    <div class="section-head"><h2>Projects</h2></div>
+    <div class="grid" id="projects"><div class="empty">Loading…</div></div>
   </section>
 
-  <div class="toolbar" id="toolbar" hidden>
-    <input id="search" type="search" placeholder="Search patches…" aria-label="Search patches">
-    <select id="platform" aria-label="Filter by platform"><option value="">All platforms</option></select>
-  </div>
+  <section class="section" id="patches-section">
+    <div class="section-head"><h2>Patches</h2><a href="patches.html">All patches →</a></div>
+    <p class="section-intro">Mods and fixes for classic games. Pick your own copy of the game and patch it right in the browser. Patches only, never ROMs.</p>
+    <div class="grid" id="latest-patches"><div class="empty">Loading…</div></div>
+  </section>
 
-  <div class="grid" id="grid"><div class="empty">Loading…</div></div>
-
-  <section id="how" class="panel" style="margin-top:40px">
-    <h2>How it works</h2>
-    <p><strong>1.</strong> Open a patch and check which version of the game it needs.</p>
-    <p><strong>2.</strong> Under <em>Patch it in your browser</em>, pick your ROM file. The site checks it's the exact right version.</p>
-    <p><strong>3.</strong> Press <em>Apply patch</em> and save the patched game. Your file never leaves your device.</p>
+  <section class="section" id="links-section">
+    <div class="section-head"><h2>Links</h2></div>
+    <div class="links" id="links"><div class="empty">Loading…</div></div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">Redfern's Outpost · Patches only, no ROMs. · Patching by <a href="https://github.com/marcrobledo/RomPatcher.js" target="_blank" rel="noopener">Rom Patcher JS</a> (MIT).</div>
+  <div class="wrap">
+    <span>© 2026 Redfern's Outpost</span>
+    <span>Patches only, never ROMs. Patching by <a href="https://github.com/marcrobledo/RomPatcher.js" target="_blank" rel="noopener">Rom Patcher JS</a>.</span>
+  </div>
 </footer>
 
 <script src="assets/site.js"></script>
-<script>renderCatalog();</script>
+<script>renderHome();</script>
 </body>
 </html>

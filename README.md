@@ -1,11 +1,38 @@
-# Redfern's Outpost — ROM Patches
+# Redfern's Outpost
 
-A small static website for sharing game patches and ROM hacks. Visitors can
-download a patch, or patch their own copy of the game right in the browser
-(powered by [Rom Patcher JS](https://github.com/marcrobledo/RomPatcher.js), MIT).
+The Redfern's Outpost website: projects (games and apps), game patches, and
+links. Visitors can download a patch, or patch their own copy of the game right
+in the browser (powered by [Rom Patcher JS](https://github.com/marcrobledo/RomPatcher.js), MIT).
 
-No build step: GitHub Pages serves these files as they are. Every patch is
-described in **`patches.json`**; both pages read it.
+No build step: GitHub Pages serves these files as they are. Three data files
+drive everything:
+
+| File | Drives | Pages |
+|---|---|---|
+| `projects.json` | Projects grid + one page per project | `index.html`, `project.html?id=…` |
+| `patches.json` | Patch catalog + one page per patch | `patches.html`, `patch.html?id=…` (latest 3 also on the home page) |
+| `links.json` | The Links section | `index.html` |
+
+Images live in `projects/<id>/` and `patches/<id>/`. The look (woodsmoke,
+parchment, rust and pine; Alegreya + Pixelify Sans) is all in `assets/site.css`.
+Redfern in the banner and header is the first idle frame of his PixelLab sheet
+from the Godot game.
+
+`incoming/` (git-ignored, never published) is the drop folder for new patch
+files before they're checked and turned into pages.
+
+## Projects and links
+
+A project entry: `id`, `title`, `kind` (Game / App / Port), `platform`, `status`
+(optional), `order`, `featured` (optional, one wide card), `summary`,
+`description` (blank line between paragraphs), `features` (list), `cover` +
+`coverStyle` (`"icon"` for app icons), `screenshots`, `screenshotNote`, `note`
+(shown in the sidebar, e.g. disclaimers), `links` (`[{ "label", "url" }]`).
+
+A link entry: `title`, `url`, `description`.
+
+Never put game assets from commercial games on the site (screenshots of your own
+port running SEGA's data included). Emulator pages never offer games or BIOS files.
 
 ## The one rule: patches only
 
