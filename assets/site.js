@@ -99,7 +99,7 @@ function projectMeta(p) {
 
 function projectThumb(p) {
   if (p.cover && p.coverStyle === "icon") return el("img", { class: "thumb icon", src: p.cover, alt: "" });
-  if (p.cover) return el("img", { class: "thumb shot", src: p.cover, alt: "" });
+  if (p.cover) return el("img", { class: "thumb shot" + (p.smooth ? " smooth" : ""), src: p.cover, alt: "" });
   return el("span", { class: "thumb initials", "aria-hidden": "true", text: initials(p.title) });
 }
 
@@ -201,7 +201,7 @@ async function renderProject() {
   const wide = shots.length && !/\.(jpe?g)$/i.test(shots[0]);
   const parts = [head];
   if (wide && project.cover && !isIcon) {
-    parts.push(el("img", { class: "hero-shot", src: project.cover, alt: project.title }));
+    parts.push(el("img", { class: "hero-shot" + (project.smooth ? " smooth" : ""), src: project.cover, alt: project.title }));
     shots = shots.filter((src) => src !== project.cover);
   }
 
@@ -219,8 +219,8 @@ async function renderProject() {
   if (shots.length) {
     left.append(el("section", { class: "block" }, [
       el("h2", { text: "Screenshots" }),
-      el("div", { class: "shots" + (wide ? "" : " tall") }, shots.map((src) =>
-        el("img", { src, alt: project.title + " screenshot", onclick: () => openLightbox(src) }))),
+      el("div", { class: "shots" + (wide ? "" : " tall") + (project.smooth ? " smooth" : "") }, shots.map((src) =>
+        el("img", { src, alt: project.title + " screenshot", onclick: () => openLightbox(src, project.smooth) }))),
       project.screenshotNote && el("p", { class: "muted", style: "margin-top:14px", text: project.screenshotNote }),
     ]));
   }
@@ -428,7 +428,7 @@ function startPatcher(patch) {
   }
 }
 
-function openLightbox(src) {
-  const box = el("div", { class: "lightbox", onclick: () => box.remove() }, [el("img", { src, alt: "" })]);
+function openLightbox(src, smooth) {
+  const box = el("div", { class: "lightbox" + (smooth ? " smooth" : ""), onclick: () => box.remove() }, [el("img", { src, alt: "" })]);
   document.body.append(box);
 }

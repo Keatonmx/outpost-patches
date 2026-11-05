@@ -29,36 +29,16 @@
     "links": []
   },
   {
-    "id": "chao-world-vita",
-    "title": "Chao World Vita",
-    "kind": "Port",
-    "platform": "PS Vita · PC",
-    "status": "In development",
-    "order": 2,
-    "summary": "Sonic Adventure 2: Battle's Chao World as a standalone game for the PS Vita, plus an expanded edition, Chao World: Seasons.",
-    "description": "A faithful port of the Chao World from Sonic Adventure 2: Battle, made to stand on its own on a PS Vita. There are no stages and no story, just the gardens, the Chao and the things you do with them, and every character is playable.\n\nChao logic is ported from the original rather than approximated. Rings come from races, karate and garden activities, and the Black Market sells animals and Chaos Drives.\n\nThe same code also builds Chao World: Seasons, an expanded edition with its own extras that installs side by side with the stock game.",
-    "features": [
-      "Every character playable: Sonic, Tails, Knuckles, Shadow, Eggman, Rouge and more",
-      "Races, karate, the kindergarten and the Black Market",
-      "Two save files and the transporter",
-      "Chao World: Seasons, an expanded edition with photo mode and more",
-      "Builds for PS Vita and PC"
-    ],
-    "cover": "",
-    "screenshots": [],
-    "note": "A fan project. Not affiliated with or endorsed by SEGA. Sonic Adventure 2 and Chao are trademarks of SEGA. The port runs on data from your own copy of the game, and nothing from the game is distributed here.",
-    "links": []
-  },
-  {
     "id": "chao-world-seasons",
     "title": "Chao World: Seasons",
-    "kind": "Port",
-    "platform": "PS Vita · PC",
+    "kind": "Game",
+    "platform": "PS Vita",
     "status": "In development",
-    "order": 3,
-    "summary": "The expanded edition of Chao World Vita: four seasons, livelier Chao, the Chao Games, photo mode and more.",
-    "description": "Chao World: Seasons is the expanded edition of Chao World Vita. It keeps everything from the stock port and adds a calendar that turns: spring, summer, autumn and winter, with day and night, rainy days and festivals in the lobby.\n\nThe Chao have more going on too. Each one has a personality, a family, dreams and favourite things, and grows up at the pace you care for it. There's a Chao Games tournament every season, a photo mode, a journal, fishing, garden decorating and new places to visit.\n\nMany of the extras rebuild features from the Chao World Extended and Enhanced Chao World mods for PC. Seasons installs next to the stock game, with its own saves.",
+    "order": 2,
+    "summary": "Chao World as a game of its own on the PS Vita: the Chao garden from Sonic Adventure 2: Battle, grown into a full year of seasons.",
+    "description": "Chao World: Seasons is a Chao World game made for the PS Vita. It started with the Chao World inside Sonic Adventure 2: Battle on the GameCube: the gardens, the Chao and everything you do with them, taken out of the main game with no stages and no story. From there it was built out into a bigger Chao World of its own.\n\nThe year turns: spring, summer, autumn and winter, with day and night, rainy days and festivals in the lobby. Every Chao has a personality, a family, dreams and favourite things, and grows up at the pace you care for it. There's a Chao Games tournament every season, a photo mode, a journal, fishing, garden decorating and new places to visit.\n\nSome of the extras rebuild favourite features from the Chao World Extended and Enhanced Chao World mods for PC.",
     "features": [
+      "Just the Chao World: no stages, no story, every character playable",
       "Four seasons, day and night, rainy days and lobby festivals",
       "Livelier Chao: personalities, families, dreams and rare Chao",
       "The Chao Games each season: race, karate and a swim, alone or as a team of three",
@@ -90,7 +70,7 @@
     "kind": "App",
     "platform": "iPhone · iPad",
     "status": "On the App Store",
-    "order": 4,
+    "order": 3,
     "summary": "A Game Boy Advance emulator for iPhone and iPad, built on the mGBA core.",
     "description": "Tinbox is a native iOS Game Boy Advance player, with a SwiftUI interface, Metal rendering and the accurate mGBA core underneath.\n\nIt keeps your library tidy, plays in portrait or landscape, and has save states, themes and skins.",
     "features": [
@@ -123,7 +103,7 @@
     "kind": "App",
     "platform": "iPhone",
     "status": "",
-    "order": 5,
+    "order": 4,
     "summary": "A free file mule for iOS. Haul files between your phone and anything that speaks SMB, FTP or SFTP.",
     "description": "Packmule moves files between your phone and Windows shares, NAS boxes, Linux machines and other phones. It can also host: start its built-in FTP server and other devices connect to the phone.\n\nFree means free. SMB, FTP, uploads, downloads: all of it. There's no Pro tier, no subscription and no unlock. A file app shouldn't ransom your own files back to you.",
     "features": [
@@ -139,25 +119,35 @@
     "links": []
   },
   {
-    "id": "bifold",
-    "title": "Bifold",
-    "kind": "App",
-    "platform": "iPhone",
-    "status": "",
-    "order": 6,
-    "summary": "A Nintendo DS emulator for iPhone, built around the melonDS core.",
-    "description": "Two screens, a touch screen, and a microphone you can blow into. Bifold renders both screens with Metal, stacked in portrait or side by side in landscape, and the touch screen takes real touch input wherever it is.\n\nIt boots games with melonDS's built-in free BIOS, so no BIOS or firmware dumps are needed.",
+    "id": "devbazaar",
+    "title": "DevBazaar",
+    "kind": "Website",
+    "platform": "Web",
+    "status": "Coming soon",
+    "order": 5,
+    "smooth": true,
+    "summary": "A marketplace where indie devs hand off games they can't finish, trade assets and find collaborators, with a signed agreement and escrow on every deal.",
+    "description": "DevBazaar is a marketplace built for indie game developers. Sometimes a project stalls because you ran out of time, money or spark, not because the idea was bad. DevBazaar lets you hand it to someone who'll finish it.\n\nThe Unfinished aisle has prototypes, vertical slices and nearly-finished games looking for a new owner, with their progress, engine and exactly what's included. The Assets aisle has tilesets, music, sound effects and code to buy outright, license or trade for something of your own. And the notice board is where projects find artists, composers and programmers, for paid, rev-share or hobby work.\n\nHaggling's welcome: offer cash, a trade or both. When a deal is struck, both sides sign a written rights agreement and the money sits in escrow until the work is delivered. Set up like a night market, with hand-painted signs, price tags and a resident raven, DevBazaar is a friendlier place to pass a project on.",
     "features": [
-      "Both screens, stacked or side by side",
-      "Real touch input, plus a hold-to-blow mic button",
-      "Ten save-state slots with thumbnails, and auto-save",
-      "Fast-forward, screen swap and Bluetooth controllers",
-      "Your library, with each game's own banner as cover art"
+      "Sell, license or trade unfinished games and assets",
+      "Haggle with cash, trades, or both",
+      "A rights agreement both sides sign on every deal",
+      "Escrow: sellers get paid when buyers confirm delivery",
+      "Collaborator notice board for paid, rev-share or hobby projects",
+      "AI-use disclosure on every listing, with a filter",
+      "5% fee, taken from the seller's side only when a sale completes"
     ],
-    "cover": "projects/bifold/icon.png",
-    "coverStyle": "icon",
-    "screenshots": [],
-    "note": "Bifold doesn't come with any games. Built on melonDS (GPL-3.0).",
+    "cover": "projects/devbazaar/home.webp",
+    "screenshots": [
+      "projects/devbazaar/home.webp",
+      "projects/devbazaar/browse.webp",
+      "projects/devbazaar/listing.webp",
+      "projects/devbazaar/notice-board.webp",
+      "projects/devbazaar/how-it-works.webp",
+      "projects/devbazaar/seller-stall.webp"
+    ],
+    "screenshotNote": "The screenshots show sample listings and people from the demo data, not real users.",
+    "note": "DevBazaar isn't open yet. Payments run in test mode until launch.",
     "links": []
   }
 ]

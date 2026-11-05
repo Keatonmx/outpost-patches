@@ -294,6 +294,8 @@ aside .note { border-left: 3px solid var(--pine); padding-left: 14px; }
 }
 .shots img:hover { transform: translateY(-3px); }
 .shots.tall img { image-rendering: auto; }
+/* Screenshots that aren't pixel art (a project's "smooth": true) scale smoothly. */
+.hero-shot.smooth, .thumb.shot.smooth, .shots.smooth img, .lightbox.smooth img { image-rendering: auto; }
 
 .facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 15px; margin: 0; }
 .facts dt { color: var(--muted); }
