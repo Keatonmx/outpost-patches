@@ -9,37 +9,47 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700&family=Alegreya+Sans:wght@400;700&family=Pixelify+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="rom-patcher-js/style.css">
 <link rel="stylesheet" href="assets/site.css">
+<script src="rom-patcher-js/RomPatcher.webapp.js"></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="./"><img src="assets/img/mark.svg" alt=""><span>Redfern's Outpost</span></a>
-    <nav class="nav"><a href="./#projects-section">Projects</a><a href="patches.html" aria-current="page">Patches</a><a href="./#links-section">Links</a></nav>
+    <nav class="nav"><a href="./#games-section">Games</a><a href="./#projects-section">Projects</a><a href="patches.html" aria-current="page">Patches</a><a href="./#links-section">Links</a></nav>
   </div>
 </header>
 
 <main class="wrap">
   <section class="page-head">
     <div class="eyebrow">Patches</div>
-    <h1>Game patches &amp; ROM hacks</h1>
-    <p>Mods, fixes and fan projects for classic games. Pick a patch, choose your own copy of the game, and get the patched version in seconds, right in your browser.</p>
+    <h1>Patch a ROM</h1>
+    <p>Apply any patch to your own copy of a game, right in your browser: IPS, UPS, BPS, APS, PPF, RUP, xdelta, BDF and Star Rod patches, zipped or not. Your files never leave your device.</p>
     <div class="notice">This site hosts <strong>patches only</strong>. It never provides games or ROMs. You'll need your own copy of the original game.</div>
   </section>
 
+  <section id="patcher" class="block patcher-open">
+    <div id="patcher-box"><div class="empty">Loading the patcher…</div></div>
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="section-head"><h2>Patches from the outpost</h2></div>
+    <p class="section-intro">Mods, fixes and fan projects made here. Open one to patch it in your browser, with a check that your ROM is the right version.</p>
   <div class="toolbar" id="toolbar" hidden>
     <input id="search" type="search" placeholder="Search patches…" aria-label="Search patches">
     <select id="platform" aria-label="Filter by platform"><option value="">All platforms</option></select>
   </div>
 
-  <div class="grid" id="grid" style="margin-top:36px"><div class="empty">Loading…</div></div>
+  <div class="grid" id="grid" style="margin-top:28px"><div class="empty">Loading…</div></div>
+  </section>
 
   <section id="how" class="section block">
     <div class="section-head"><h2>How it works</h2></div>
     <ol class="steps">
-      <li>Open a patch and check which version of the game it needs.</li>
-      <li>Under <em>Patch it in your browser</em>, pick your ROM file. The site checks it's the exact right version.</li>
-      <li>Press <em>Apply patch</em> and save the patched game. Your file never leaves your device.</li>
+      <li>Choose your ROM file. A zipped ROM works too.</li>
+      <li>Choose the patch file: .ips, .bps, .ups, .xdelta and the rest, or a .zip with the patch inside.</li>
+      <li>Press <em>Apply patch</em> and save the patched game. If the patch says which ROM it needs, the patcher shows it, so you can check yours matches.</li>
     </ol>
   </section>
 </main>
@@ -52,6 +62,6 @@
 </footer>
 
 <script src="assets/site.js"></script>
-<script>renderCatalog();</script>
+<script>renderPatcher(); renderCatalog();</script>
 </body>
 </html>

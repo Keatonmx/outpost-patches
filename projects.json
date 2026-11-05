@@ -7,6 +7,7 @@
     "status": "In development",
     "order": 1,
     "featured": true,
+    "coverSmooth": true,
     "summary": "A top-down pixel adventure about a mountain man holding down a lonely outpost in the pines.",
     "description": "You are Redfern, keeping a palisaded outpost in the pines: two log cabins, a well, a pond to the north, and a trail that disappears south into the forest.\n\nRedfern carries the Fernbrand, one tool that can't be dropped and changes shape instead. As a timber axe it fells trees; as a lash it drags loot to your hand; fed with tusks it becomes a pick you brace against a charging boar. Each shape climbs its own ranks, from Novice to Legend.\n\nThe seasons turn, the year goes by, and Redfern ages with it. It started life as a Game Boy Advance prototype and is now being built in Godot with full-colour pixel art.",
     "features": [
@@ -16,8 +17,9 @@
       "Four seasons, a calendar, and a hero who grows older",
       "Hand-made 32 px pixel art"
     ],
-    "cover": "projects/redferns-outpost/autumn.png",
+    "cover": "projects/redferns-outpost/village.webp",
     "screenshots": [
+      "projects/redferns-outpost/village.webp",
       "projects/redferns-outpost/autumn.png",
       "projects/redferns-outpost/winter.png",
       "projects/redferns-outpost/spring.png",

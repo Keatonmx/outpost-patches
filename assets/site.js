@@ -97,9 +97,14 @@ function projectMeta(p) {
   return metaLine([[p.kind, "kind"], [p.platform], [p.status, "good"]]);
 }
 
+/* "smooth": every screenshot scales smoothly; "coverSmooth": only the cover does */
+function coverClass(p) {
+  return p.smooth || p.coverSmooth ? " smooth" : "";
+}
+
 function projectThumb(p) {
   if (p.cover && p.coverStyle === "icon") return el("img", { class: "thumb icon", src: p.cover, alt: "" });
-  if (p.cover) return el("img", { class: "thumb shot" + (p.smooth ? " smooth" : ""), src: p.cover, alt: "" });
+  if (p.cover) return el("img", { class: "thumb shot" + coverClass(p), src: p.cover, alt: "" });
   return el("span", { class: "thumb initials", "aria-hidden": "true", text: initials(p.title) });
 }
 
@@ -107,7 +112,7 @@ function projectCard(p) {
   const href = "project.html?id=" + encodeURIComponent(p.id);
   if (p.featured && p.cover && p.coverStyle !== "icon") {
     return el("a", { class: "feature", href }, [
-      el("img", { src: p.cover, alt: p.title }),
+      el("img", { class: coverClass(p).trim(), src: p.cover, alt: p.title }),
       el("div", {}, [
         el("div", { class: "eyebrow", text: "The main game" }),
         el("h3", { text: p.title }),
@@ -142,15 +147,24 @@ function linkCard(link) {
 }
 
 async function renderHome() {
+  const gamesBox = document.getElementById("games");
   const projectsBox = document.getElementById("projects");
   const patchesBox = document.getElementById("latest-patches");
   const linksBox = document.getElementById("links");
 
   loadProjects()
-    .then((list) => list.length
-      ? projectsBox.replaceChildren(...list.map(projectCard))
-      : showError(projectsBox, "Projects are on the way."))
-    .catch((err) => showError(projectsBox, err.message));
+    .then((list) => {
+      const games = list.filter((p) => p.kind === "Game");
+      const others = list.filter((p) => p.kind !== "Game");
+      if (games.length) gamesBox.replaceChildren(...games.map(projectCard));
+      else showError(gamesBox, "Games are on the way.");
+      if (others.length) projectsBox.replaceChildren(...others.map(projectCard));
+      else showError(projectsBox, "Projects are on the way.");
+    })
+    .catch((err) => {
+      showError(gamesBox, err.message);
+      showError(projectsBox, err.message);
+    });
 
   loadPatches()
     .then((list) => list.length
@@ -185,6 +199,15 @@ async function renderProject() {
   }
 
   document.title = project.title + " · " + SITE;
+  if (project.kind === "Game") {
+    const back = document.querySelector(".back");
+    back.href = "./#games-section";
+    back.textContent = "← All games";
+    document.querySelectorAll(".nav a").forEach((a) => {
+      if (a.hash === "#games-section") a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+  }
 
   const isIcon = project.cover && project.coverStyle === "icon";
   const head = el("div", { class: "detail-head" }, [
@@ -201,7 +224,7 @@ async function renderProject() {
   const wide = shots.length && !/\.(jpe?g)$/i.test(shots[0]);
   const parts = [head];
   if (wide && project.cover && !isIcon) {
-    parts.push(el("img", { class: "hero-shot" + (project.smooth ? " smooth" : ""), src: project.cover, alt: project.title }));
+    parts.push(el("img", { class: "hero-shot" + coverClass(project), src: project.cover, alt: project.title }));
     shots = shots.filter((src) => src !== project.cover);
   }
 
@@ -366,7 +389,19 @@ async function renderPatch() {
   startPatcher(patch);
 }
 
-function patcherMarkup() {
+/* open: any patch file (the Patches page); otherwise the patch page's own patch, embedded */
+function patcherMarkup(open) {
+  const patchRow = open
+    ? el("div", { class: "rom-patcher-row margin-bottom", id: "rom-patcher-row-file-patch" }, [
+        el("div", {}, [el("label", { for: "rom-patcher-input-file-patch", text: "Patch file:" })]),
+        el("div", { class: "rom-patcher-container-input" }, [
+          el("input", { type: "file", id: "rom-patcher-input-file-patch", class: "empty", disabled: "" }),
+        ]),
+      ])
+    : el("div", { class: "rom-patcher-row margin-bottom", id: "rom-patcher-row-file-patch", style: "display:none" }, [
+        el("div", {}, [el("label", { text: "Patch:" })]),
+        el("div", { class: "rom-patcher-container-input" }, [el("select", { id: "rom-patcher-select-patch" })]),
+      ]);
   return el("div", {}, [
     el("div", { id: "rom-patcher-container" }, [
       el("div", { class: "rom-patcher-row margin-bottom", id: "rom-patcher-row-file-rom" }, [
@@ -383,10 +418,14 @@ function patcherMarkup() {
           el("div", { text: "ROM:" }), el("div", { class: "text-truncate" }, [el("span", { id: "rom-patcher-span-rom-info" })]),
         ]),
       ]),
-      el("div", { class: "rom-patcher-row margin-bottom", id: "rom-patcher-row-file-patch", style: "display:none" }, [
-        el("div", {}, [el("label", { text: "Patch:" })]),
-        el("div", { class: "rom-patcher-container-input" }, [el("select", { id: "rom-patcher-select-patch" })]),
+      open && el("div", { class: "rom-patcher-row margin-bottom", id: "rom-patcher-row-alter-header" }, [
+        el("div", {}),
+        el("div", {}, [
+          el("input", { type: "checkbox", id: "rom-patcher-checkbox-alter-header", disabled: "" }),
+          el("label", { for: "rom-patcher-checkbox-alter-header", id: "rom-patcher-span-alter-header" }),
+        ]),
       ]),
+      patchRow,
       el("div", { class: "rom-patcher-row margin-bottom text-selectable text-mono text-muted", id: "rom-patcher-row-patch-requirements" }, [
         el("div", { id: "rom-patcher-patch-requirements-type", text: "ROM requirements:" }),
         el("div", { class: "text-truncate", id: "rom-patcher-patch-requirements-value" }),
@@ -418,14 +457,27 @@ function startPatcher(patch) {
   };
   if (patch.baseCrc32) info.inputCrc32 = "0x" + String(patch.baseCrc32).replace(/^0x/i, "");
   const canValidate = !!patch.baseCrc32 || /\.(bps|ups)$/i.test(patch.file);
+  initPatcher({ language: "en", requireValidation: canValidate, allowDropFiles: true }, info,
+    "Your browser is too old for the online patcher. Download the patch file below instead.");
+}
+
+function initPatcher(settings, info, tooOld) {
   try {
-    RomPatcherWeb.initialize({ language: "en", requireValidation: canValidate, allowDropFiles: true }, info);
+    RomPatcherWeb.initialize(settings, info);
   } catch (err) {
     const box = document.getElementById("rom-patcher-container");
-    box.textContent = /incompatible browser|RomPatcherWeb/i.test(err.message)
-      ? "Your browser is too old for the online patcher. Download the patch file below instead."
-      : err.message;
+    box.textContent = /incompatible browser|RomPatcherWeb/i.test(err.message) ? tooOld : err.message;
   }
+}
+
+/* ---------------- the open patcher (patches.html) ---------------- */
+
+function renderPatcher() {
+  document.getElementById("patcher-box").replaceChildren(patcherMarkup(true));
+  // Rom Patcher JS finds its own folder through document.currentScript, which inside the page's inline
+  // <script> is that script, so it starts once the inline script is done
+  setTimeout(() => initPatcher({ language: "en", requireValidation: false, allowDropFiles: true }, undefined,
+    "Your browser is too old for the online patcher. Floating IPS or Rom Patcher JS can apply patches on your computer instead."));
 }
 
 function openLightbox(src, smooth) {
