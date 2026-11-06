@@ -69,7 +69,7 @@ function showError(where, message) {
 
 function safeUrl(url) {
   try {
-    const u = new URL(url, location.href);
+    const u = new URL(url, document.baseURI);
     return u.protocol === "https:" || u.protocol === "http:" ? u.href : null;
   } catch (err) {
     return null;
@@ -109,7 +109,7 @@ function projectThumb(p) {
 }
 
 function projectCard(p) {
-  const href = "project.html?id=" + encodeURIComponent(p.id);
+  const href = "projects/" + encodeURIComponent(p.id) + "/";
   if (p.featured && p.cover && p.coverStyle !== "icon") {
     return el("a", { class: "feature", href }, [
       el("img", { class: coverClass(p).trim(), src: p.cover, alt: p.title }),
@@ -183,9 +183,10 @@ async function renderHome() {
 
 /* ---------------- project page (project.html) ---------------- */
 
-async function renderProject() {
+/* pageId: set on a project's own page (projects/<id>/, made by tools/build-pages.py) */
+async function renderProject(pageId) {
   const main = document.getElementById("project");
-  const id = new URLSearchParams(location.search).get("id");
+  const id = pageId || new URLSearchParams(location.search).get("id");
   let project;
   try {
     project = (await loadProjects()).find((p) => p.id === id);
@@ -197,8 +198,13 @@ async function renderProject() {
     showError(main, "That project doesn't exist (anymore). Head back to the outpost.");
     return;
   }
+  // an old link (project.html?id=...) goes on to the project's own page, which has its link preview
+  if (!pageId) {
+    location.replace("projects/" + encodeURIComponent(id) + "/");
+    return;
+  }
 
-  document.title = project.title + " · " + SITE;
+  document.title = project.title === SITE ? SITE : project.title + " · " + SITE;
   if (project.kind === "Game") {
     const back = document.querySelector(".back");
     back.href = "./#games-section";

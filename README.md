@@ -9,7 +9,7 @@ drive everything:
 
 | File | Drives | Pages |
 |---|---|---|
-| `projects.json` | Projects grid + one page per project | `index.html`, `project.html?id=…` |
+| `projects.json` | Games and Projects grids + one page per project | `index.html`, `projects/<id>/` |
 | `patches.json` | Patch catalog + one page per patch | `patches.html`, `patch.html?id=…` (latest 3 also on the home page) |
 | `links.json` | The Links section | `index.html` |
 
@@ -19,13 +19,20 @@ is all in `assets/site.css`. The banner (`assets/img/banner.png`, a dusk cabin i
 the pines) was made with PixelLab for the site, separate from the game's art, so
 the home page reads as the site's intro rather than the game's.
 
+**After changing `projects.json` or a project's cover, run `python tools/build-pages.py`**
+(needs Pillow). It makes each project's own page, `projects/<id>/index.html`, from
+`project.html`, with a link preview (title, summary and a 1200 x 630 `share.jpg`) that
+Discord, iMessage and the rest can read without running JavaScript. It also writes
+`sitemap.xml`. Old `project.html?id=…` links forward to the new pages.
+
 `incoming/` (git-ignored, never published) is the drop folder for new patch
 files before they're checked and turned into pages.
 
 ## Projects and links
 
 A project entry: `id`, `title`, `kind` (Game / App / Port), `platform`, `status`
-(optional), `order`, `featured` (optional, one wide card), `summary`,
+(optional), `order`, `featured` (optional, one wide card), `smooth` / `coverSmooth` (optional:
+screenshots, or just the cover, aren't pixel art and scale smoothly), `summary`,
 `description` (blank line between paragraphs), `features` (list), `cover` +
 `coverStyle` (`"icon"` for app icons), `screenshots`, `screenshotNote`, `note`
 (shown in the sidebar, e.g. disclaimers), `links` (`[{ "label", "url" }]`).
