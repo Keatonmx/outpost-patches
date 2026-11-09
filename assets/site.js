@@ -175,8 +175,9 @@ async function renderHome() {
   loadJson("links.json")
     .then((list) => {
       const cards = list.map(linkCard).filter(Boolean);
-      if (cards.length) linksBox.replaceChildren(...cards);
-      else showError(linksBox, "No links yet.");
+      if (!cards.length) return; // the Links section stays hidden until there's a link to show
+      linksBox.replaceChildren(...cards);
+      linksBox.closest("section").hidden = false;
     })
     .catch((err) => showError(linksBox, err.message));
 }
