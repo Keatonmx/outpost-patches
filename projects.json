@@ -93,10 +93,7 @@
     ],
     "screenshotNote": "The game shown is Tobu Tobu Girl Deluxe, a free homebrew game.",
     "note": "Tinbox doesn't come with any games. Play games you own or free homebrew.",
-    "links": [
-      { "label": "Get it on the App Store", "url": "https://apps.apple.com/us/app/tinbox-game-emulator/id6809113803" },
-      { "label": "Support & privacy", "url": "https://keatonmx.github.io/tinbox-support/" }
-    ]
+    "links": []
   },
   {
     "id": "packmule",
