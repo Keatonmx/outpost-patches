@@ -25,6 +25,8 @@ media_libraries:
     config:
       max_file_size: 26214400 # 25 MB, GitHub's own limit for uploads from a browser
       slugify_filename: true
+  stock_assets:
+    providers: [] # no stock photo sites in the file picker
 
 # the form gets the whole width; "View on Live Site" shows the real page
 editor:
@@ -94,9 +96,10 @@ collections:
         label: The main picture is
         widget: select
         default: shot
+        hint: Most games use a screenshot. Pick app icon only for a small square icon, like Tinbox's.
         options:
-          - { label: A screenshot or photo, value: shot }
-          - { label: An app icon, value: icon }
+          - { label: A screenshot or photo (shown big), value: shot }
+          - { label: A square app icon (shown small), value: icon }
       - name: screenshots
         label: Screenshots
         widget: image
@@ -130,11 +133,14 @@ collections:
         label_singular: Download
         widget: list
         required: false
-        hint: Files people can download from the page, up to 25 MB each.
+        hint: Files people can download from the page.
         summary: "{{label}}"
         fields:
           - { name: label, label: Button text, hint: Like Download for Windows }
-          - { name: file, label: File, widget: file }
+          - name: file
+            label: File
+            widget: file
+            hint: Drop in a file up to 25 MB. For a bigger file, put it on a GitHub Release, copy its link, then click Browse, choose Enter URL and paste it.
       - name: note
         label: Side note
         widget: text

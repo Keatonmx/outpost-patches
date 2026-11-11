@@ -104,8 +104,13 @@ def icon_image(p, icon_file):
     im = Image.new("RGB", (W, H), BG)
     icon = Image.open(icon_file).convert("RGBA")
     size = 384
+    side = min(icon.size)  # a picture that isn't square is cut to its middle, not squashed
+    icon = icon.crop(((icon.width - side) // 2, (icon.height - side) // 2,
+                      (icon.width - side) // 2 + side, (icon.height - side) // 2 + side))
     # sharp pixels first, then down to size, so pixel-art icons stay crisp without uneven pixels
-    icon = icon.resize((icon.width * 3, icon.height * 3), Image.NEAREST).resize((size, size), Image.LANCZOS)
+    if side <= 1024:
+        icon = icon.resize((side * 3, side * 3), Image.NEAREST)
+    icon = icon.resize((size, size), Image.LANCZOS)
     top = (H - size) // 2
     im.paste(icon, (80, top), icon)
     draw = ImageDraw.Draw(im)
