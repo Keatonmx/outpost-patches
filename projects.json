@@ -29,8 +29,8 @@
     "links": []
   },
   {
-    "id": "chao-world-seasons",
     "title": "Chao World: Seasons",
+    "id": "chao-world-seasons",
     "kind": "Game",
     "platform": "PS Vita",
     "status": "In development",
@@ -46,6 +46,7 @@
       "Features from CWE"
     ],
     "cover": "/projects/chao-world-seasons/four-seasons.webp",
+    "coverStyle": "icon",
     "screenshots": [
       "/projects/chao-world-seasons/four-seasons.webp",
       "/projects/chao-world-seasons/changing-room.webp",
@@ -60,8 +61,9 @@
       "/projects/chao-world-seasons/tiny-chao-garden.webp"
     ],
     "screenshotNote": "Work-in-progress screenshots.",
-    "note": "A fan project. Not affiliated with or endorsed by SEGA. Sonic Adventure 2, Sonic and Chao are trademarks of SEGA. Seasons runs on data from your own copy of the game, and no game files are distributed here.",
-    "links": []
+    "smooth": false,
+    "coverSmooth": false,
+    "note": "A fan project. Not affiliated with or endorsed by SEGA. Sonic Adventure 2, Sonic and Chao are trademarks of SEGA. Seasons runs on data from your own copy of the game, and no game files are distributed here."
   },
   {
     "id": "tinbox",
