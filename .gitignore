@@ -3,3 +3,10 @@ incoming/
 
 # Links taken off the site, kept locally only
 parked/
+
+# Made by tools/build-pages.py each time the site is published (.github/workflows/deploy.yml), never committed
+projects/*/index.html
+projects/*/share.jpg
+assets/img/share.jpg
+assets/img/share-patcher.jpg
+sitemap.xml

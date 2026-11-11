@@ -19,13 +19,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700&family=Alegreya+Sans:wght@400;700&family=Pixelify+Sans:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=4">
+<link rel="stylesheet" href="assets/site.css?v=5">
 </head>
 <body>
 <header class="topbar over">
   <div class="wrap">
     <a class="brand" href="./"><img src="assets/img/mark.svg" alt=""><span>Redfern's Outpost</span></a>
-    <nav class="nav"><a href="#games-section">Games</a><a href="#projects-section">Projects</a><a href="patches.html">Patches</a></nav>
+    <nav class="nav"><a href="#games-section">Games</a><a href="#projects-section">Projects</a><a href="patches.html">Patches</a><!-- about-nav --><!-- /about-nav --></nav>
   </div>
 </header>
 
@@ -33,7 +33,7 @@
   <div class="wrap">
     <div class="eyebrow">Est. in the pines</div>
     <h1>Redfern's Outpost</h1>
-    <p>Games, apps and patches, made at a little outpost in the pines.</p>
+    <p data-edit="tagline">Games, apps and patches, made at a little outpost in the pines.</p>
     <div class="actions">
       <a class="btn primary" href="#games-section">See the games</a>
       <a class="btn" href="patches.html#patcher">Patch a ROM</a>
@@ -58,6 +58,9 @@
     <div class="grid" id="latest-patches"><div class="empty">Loading…</div></div>
   </section>
 
+  <!-- about: filled in from site.json by tools/build-pages.py -->
+  <!-- /about -->
+
   <section class="section" id="links-section" hidden>
     <div class="section-head"><h2>Links</h2></div>
     <div class="links" id="links"><div class="empty">Loading…</div></div>
@@ -71,7 +74,7 @@
   </div>
 </footer>
 
-<script src="assets/site.js?v=4"></script>
+<script src="assets/site.js?v=5"></script>
 <script>renderHome();</script>
 </body>
 </html>

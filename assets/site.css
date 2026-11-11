@@ -136,6 +136,13 @@ footer a { color: var(--muted); text-decoration: underline; text-underline-offse
 }
 .section-head a { font-family: var(--pixel); font-size: 15px; }
 .section-intro { margin: -14px 0 28px; color: var(--muted); max-width: 640px; }
+/* About (site.json, written into index.html by tools/build-pages.py) */
+.about { display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: start; max-width: 860px; }
+.about.text-only { grid-template-columns: 1fr; }
+.about img { width: 100%; border-radius: 14px; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); }
+.about p { margin: 0 0 14px; }
+.about p:last-child { margin-bottom: 0; }
+@media (max-width: 640px) { .about { grid-template-columns: 1fr; } .about img { max-width: 180px; } }
 
 /* page header for inner pages */
 .page-head { padding: 36px 0 6px; }
@@ -276,6 +283,8 @@ footer a { color: var(--muted); text-decoration: underline; text-underline-offse
 .block .muted { color: var(--muted); font-size: 15px; }
 aside .block h2 { font-size: 21px; }
 aside .note { border-left: 3px solid var(--pine); padding-left: 14px; }
+.download + .download { margin-top: 16px; }
+.block .download p { margin: 6px 0 0; color: var(--muted); font-size: 14px; word-break: break-all; }
 
 .features { margin: 0; padding: 0; list-style: none; }
 .features li { position: relative; padding: 5px 0 5px 26px; }

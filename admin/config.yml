@@ -1,0 +1,265 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.256.1/schema/sveltia-cms.json
+# The site editor at redfernsoutpost.com/admin/ (Sveltia CMS). Each save is a commit to main, and
+# .github/workflows/deploy.yml then builds and publishes the site, about a minute later.
+
+backend:
+  name: github
+  repo: Keatonmx/outpost-patches
+  branch: main
+  auth_methods: [token] # sign in with a GitHub access token; "Sign In with GitHub" would need an OAuth server
+  commit_messages:
+    create: "Site editor: added a {{collection}}"
+    update: "Site editor: changed a {{collection}}"
+    delete: "Site editor: removed a {{collection}}"
+    uploadMedia: "Site editor: uploaded {{path}}"
+    deleteMedia: "Site editor: deleted {{path}}"
+
+site_url: https://redfernsoutpost.com
+logo:
+  src: /assets/img/mark.svg
+
+media_folder: /assets/uploads
+public_folder: /assets/uploads
+media_libraries:
+  default:
+    config:
+      max_file_size: 26214400 # 25 MB, GitHub's own limit for uploads from a browser
+      slugify_filename: true
+
+# the form gets the whole width; "View on Live Site" shows the real page
+editor:
+  preview: false
+
+output:
+  omit_empty_optional_fields: true
+  json:
+    indent_style: space
+    indent_size: 2
+
+collections:
+  - name: projects
+    label: Games & Projects
+    label_singular: Game or project
+    description: Everything on the home page under Games and Projects. Drag them into the order you want them shown.
+    icon: sports_esports
+    file: /projects.json
+    identifier_field: title
+    summary: "{{title}} · {{kind}}"
+    thumbnail: cover
+    media_folder: /projects
+    public_folder: /projects
+    preview_path: /projects/{{id}}/
+    fields:
+      - name: title
+        label: Name
+      - name: id
+        label: Page address
+        before_input: redfernsoutpost.com/projects/
+        hint: Lowercase words joined by dashes, like my-new-game. Pick it once; changing it later breaks links people have shared.
+        pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Use lowercase letters, numbers and dashes only, like my-new-game']
+      - name: kind
+        label: Type
+        widget: select
+        options: [Game, App, Website, Port]
+        default: Game
+        hint: Games are listed under Games, everything else under Projects.
+      - name: platform
+        label: Platforms
+        hint: Like PC · Android · iOS
+      - name: status
+        label: Status
+        required: false
+        hint: Like In development, Coming soon or Out now
+      - name: summary
+        label: Short summary
+        widget: text
+        hint: One or two sentences, for the card on the home page and for link previews in Discord or iMessage.
+      - name: description
+        label: About
+        widget: text
+        hint: The main text on the page. Leave an empty line between paragraphs.
+      - name: features
+        label: Highlights
+        label_singular: Highlight
+        widget: list
+        required: false
+        hint: Short bullet points.
+        field: { name: feature, label: Highlight }
+      - name: cover
+        label: Main picture
+        widget: image
+        required: false
+        hint: Shown on the card, at the top of the page and in link previews. For an app, its icon.
+      - name: coverStyle
+        label: The main picture is
+        widget: select
+        default: shot
+        options:
+          - { label: A screenshot or photo, value: shot }
+          - { label: An app icon, value: icon }
+      - name: screenshots
+        label: Screenshots
+        widget: image
+        multiple: true
+        required: false
+        hint: Add as many as you like, then drag them into order.
+      - name: screenshotNote
+        label: Caption under the screenshots
+        required: false
+      - name: smooth
+        label: The screenshots are photos, not pixel art
+        widget: boolean
+        required: false
+        hint: Pixel art is shown sharp and blocky. Turn this on for photos and app screenshots so they scale smoothly.
+      - name: coverSmooth
+        label: Just the main picture is a photo, not pixel art
+        widget: boolean
+        required: false
+      - name: links
+        label: Buttons
+        label_singular: Button
+        widget: list
+        required: false
+        hint: Links beside the page, like Get it on the App Store. The first one is the big orange button.
+        summary: "{{label}}"
+        fields:
+          - { name: label, label: Button text }
+          - { name: url, label: Web address, type: url }
+      - name: downloads
+        label: Downloads
+        label_singular: Download
+        widget: list
+        required: false
+        hint: Files people can download from the page, up to 25 MB each.
+        summary: "{{label}}"
+        fields:
+          - { name: label, label: Button text, hint: Like Download for Windows }
+          - { name: file, label: File, widget: file }
+      - name: note
+        label: Side note
+        widget: text
+        required: false
+        hint: A small note beside the page, like a disclaimer.
+
+  - name: patches
+    label: Patches
+    label_singular: Patch
+    description: ROM patches on the Patches page, newest first. Patch files only, never a ROM or any other game file.
+    icon: build
+    file: /patches.json
+    identifier_field: title
+    summary: "{{title}} · v{{version}}"
+    thumbnail: cover
+    media_folder: /patches
+    public_folder: /patches
+    preview_path: /patch.html?id={{id}}
+    fields:
+      - name: title
+        label: Name
+      - name: id
+        label: Page address
+        before_input: redfernsoutpost.com/patch.html?id=
+        hint: Lowercase words joined by dashes, like my-cool-hack. Pick it once; changing it later breaks links people have shared.
+        pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Use lowercase letters, numbers and dashes only, like my-cool-hack']
+      - name: game
+        label: Game it patches
+        hint: The exact game and region, like Pokemon FireRed Version (USA)
+      - name: platform
+        label: Platform
+        hint: Like GBA, SNES or PS1
+      - name: version
+        label: Version
+        hint: Like 1.0
+      - name: released
+        label: Release date
+        widget: datetime
+        type: date
+        picker_utc: true
+        required: false
+      - name: summary
+        label: Short summary
+        widget: text
+        hint: One sentence for the patch card.
+      - name: description
+        label: About
+        widget: text
+        required: false
+        hint: Leave an empty line between paragraphs.
+      - name: file
+        label: Patch file
+        widget: file
+        accept: .bps,.ips,.ups,.xdelta,.vcdiff,.aps,.ppf,.rup,.bdf,.pmsr,.zip
+        hint: A .bps file is best, since it checks the player has the right game. Never upload a ROM.
+      - name: baseRom
+        label: Original ROM file name
+        required: false
+        hint: The clean ROM players need, like Pokemon - FireRed Version (USA).gba
+      - name: baseCrc32
+        label: Original ROM CRC32
+        required: false
+        hint: Eight letters and numbers. The patcher on the Patches page shows it when you pick the clean ROM.
+        pattern: ['^[0-9a-fA-F]{8}$', 'A CRC32 is 8 characters, 0 to 9 and a to f']
+      - name: cover
+        label: Card picture
+        widget: image
+        required: false
+        hint: Leave empty to use the first screenshot.
+      - name: screenshots
+        label: Screenshots
+        widget: image
+        multiple: true
+        required: false
+      - name: changelog
+        label: Version history
+        label_singular: Version
+        widget: list
+        required: false
+        hint: Newest version at the top.
+        summary: "v{{version}} · {{date}}"
+        fields:
+          - { name: version, label: Version }
+          - { name: date, label: Date, widget: datetime, type: date, picker_utc: true, required: false }
+          - { name: notes, label: What changed, widget: text }
+      - name: credits
+        label: Credits
+        widget: text
+        required: false
+
+  - name: links
+    label: Links
+    label_singular: Link
+    description: Cards at the bottom of the home page, to your other sites. The section stays hidden while this is empty.
+    icon: link
+    file: /links.json
+    identifier_field: title
+    fields:
+      - name: title
+        label: Name
+      - name: url
+        label: Web address
+        type: url
+      - name: description
+        label: Short description
+        required: false
+
+singletons:
+  - name: home
+    label: Home page
+    icon: home
+    file: /site.json
+    fields:
+      - name: tagline
+        label: Banner line
+        hint: The line under Redfern's Outpost at the top of the home page.
+      - name: aboutTitle
+        label: About heading
+        default: About
+      - name: about
+        label: About text
+        widget: text
+        required: false
+        hint: A bit about you and the outpost, shown on the home page above Links. Leave an empty line between paragraphs. While this is empty the section is hidden.
+      - name: aboutPhoto
+        label: About picture
+        widget: image
+        required: false

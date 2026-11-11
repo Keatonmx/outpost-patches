@@ -1,5 +1,5 @@
-/* Redfern's Outpost. Pages are drawn from projects.json, patches.json and links.json;
-   no build step. Data is only ever set with textContent, never as HTML. */
+/* Redfern's Outpost. Pages are drawn from projects.json, patches.json and links.json, which the
+   site editor (admin/) writes. Data is only ever set with textContent, never as HTML. */
 
 const SITE = "Redfern's Outpost";
 
@@ -29,9 +29,9 @@ async function loadPatches() {
   return list.sort((a, b) => String(b.released || "").localeCompare(String(a.released || "")));
 }
 
+/* in the file's order, which is the order they're dragged into in the site editor */
 async function loadProjects() {
-  const list = await loadJson("projects.json");
-  return list.sort((a, b) => (a.order || 99) - (b.order || 99));
+  return loadJson("projects.json");
 }
 
 /* A dotted line of small facts, e.g. "App · iPhone · On the App Store". */
@@ -262,6 +262,19 @@ async function renderProject(pageId) {
       target: "_blank", rel: "noopener", text: l.label || url });
   }).filter(Boolean);
   if (links.length) right.append(el("div", { class: "block" }, [el("h2", { text: "Links" }), ...links]));
+
+  // with no link buttons, the first download is the big orange button
+  const downloads = (project.downloads || []).map((d, i) => {
+    const url = d.file && safeUrl(d.file);
+    if (!url) return null;
+    const fileName = decodeURIComponent(new URL(url).pathname.split("/").pop());
+    return el("div", { class: "download" }, [
+      el("a", { class: "btn block" + (i === 0 && !links.length ? " primary" : ""), href: url, download: fileName,
+        text: d.label || "Download" }),
+      el("p", { class: "game", text: fileName }),
+    ]);
+  }).filter(Boolean);
+  if (downloads.length) right.append(el("div", { class: "block" }, [el("h2", { text: "Downloads" }), ...downloads]));
 
   if (project.note) right.append(el("div", { class: "block note" }, [el("p", { class: "muted", text: project.note })]));
 

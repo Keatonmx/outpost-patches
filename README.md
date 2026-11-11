@@ -4,38 +4,46 @@ The Redfern's Outpost website: projects (games and apps), game patches, and
 links. Visitors can download a patch, or patch their own copy of the game right
 in the browser (powered by [Rom Patcher JS](https://github.com/marcrobledo/RomPatcher.js), MIT).
 
-No build step: GitHub Pages serves these files as they are. Three data files
-drive everything:
+## Editing the site
+
+Open **https://redfernsoutpost.com/admin/** (the site editor, [Sveltia CMS](https://sveltiacms.app)) and
+sign in with a GitHub access token: *Sign In Using Access Token* links to GitHub with the right permissions
+picked, and the token stays saved in that browser. There you can add, change, reorder and remove games,
+projects, patches and links, upload screenshots and downloads (up to 25 MB each), and change the home page's
+banner line and About section. Each save is a commit to `main`; the site updates about a minute later.
+
+The editor writes four data files, and the pages are drawn from them:
 
 | File | Drives | Pages |
 |---|---|---|
-| `projects.json` | Games and Projects grids + one page per project | `index.html`, `projects/<id>/` |
+| `projects.json` | Games and Projects (in the file's order) + one page per project | `index.html`, `projects/<id>/` |
 | `patches.json` | Patch catalog + one page per patch | `patches.html`, `patch.html?id=…` (latest 3 also on the home page) |
-| `links.json` | The Links section | `index.html` |
+| `links.json` | The Links section (hidden while empty) | `index.html` |
+| `site.json` | The banner line and the About section | `index.html` |
 
-Images live in `projects/<id>/` and `patches/<id>/`. The look (woodsmoke,
-parchment, rust and pine; Alegreya + Pixelify Sans; open layout, no boxed cards)
-is all in `assets/site.css`. The banner (`assets/img/banner.png`, a dusk cabin in
-the pines) was made with PixelLab for the site, separate from the game's art, so
-the home page reads as the site's intro rather than the game's.
+The editor's setup is `admin/config.yml`; it loads a pinned Sveltia CMS version from `admin/index.html`.
+Uploads go to `projects/`, `patches/` and `assets/uploads/`. The look (woodsmoke, parchment, rust and pine;
+Alegreya + Pixelify Sans; open layout, no boxed cards) is all in `assets/site.css`. The banner
+(`assets/img/banner.png`, a dusk cabin in the pines) was made with PixelLab for the site.
 
-**After changing `projects.json` or a project's cover, run `python tools/build-pages.py`**
-(needs Pillow). It makes each project's own page, `projects/<id>/index.html`, from
-`project.html`, with a link preview (title, summary and a 1200 x 630 `share.jpg`) that
-Discord, iMessage and the rest can read without running JavaScript. It also writes
-`sitemap.xml`. Old `project.html?id=…` links forward to the new pages.
+**Publishing:** `.github/workflows/deploy.yml` runs on every push to `main`. It runs
+`tools/build-pages.py`, which makes each project's own page, `projects/<id>/index.html`, from `project.html`,
+with a link preview (title, summary and a 1200 x 630 `share.jpg`) that Discord, iMessage and the rest can read
+without running JavaScript; writes the banner line and About section from `site.json` into `index.html`; and
+writes `sitemap.xml`. Those generated files are never committed. To see them locally, run
+`python tools/build-pages.py` (needs Pillow; fonts are in `tools/fonts`, OFL). If an entry can't be built (no
+page address, a missing picture) the run shows a warning and publishes the rest.
 
-`incoming/` (git-ignored, never published) is the drop folder for new patch
-files before they're checked and turned into pages.
+`incoming/` (git-ignored, never published) is the drop folder for new patch files before they're checked.
 
 ## Projects and links
 
-A project entry: `id`, `title`, `kind` (Game / App / Port), `platform`, `status`
-(optional), `order`, `featured` (optional, one wide card), `smooth` / `coverSmooth` (optional:
-screenshots, or just the cover, aren't pixel art and scale smoothly), `summary`,
-`description` (blank line between paragraphs), `features` (list), `cover` +
-`coverStyle` (`"icon"` for app icons), `screenshots`, `screenshotNote`, `note`
-(shown in the sidebar, e.g. disclaimers), `links` (`[{ "label", "url" }]`).
+A project entry: `id` (page address), `title`, `kind` (Game / App / Website / Port), `platform`, `status`
+(optional), `summary`, `description` (blank line between paragraphs), `features` (list), `cover` +
+`coverStyle` (`"icon"` for app icons), `screenshots`, `screenshotNote`, `smooth` / `coverSmooth` (optional:
+screenshots, or just the cover, aren't pixel art and scale smoothly), `links` (`[{ "label", "url" }]`),
+`downloads` (`[{ "label", "file" }]`), `note` (shown in the sidebar, e.g. disclaimers). Picture and file paths
+start at the site root, like `/projects/tinbox/icon.png`.
 
 A link entry: `title`, `url`, `description`.
 
@@ -61,7 +69,7 @@ which is why sharing patches is the accepted way to distribute hacks.
 `.bps` is recommended: it records the original game's checksum, so the site can
 refuse the wrong version of the game before patching.
 
-## Adding a patch (on the GitHub website)
+## Adding a patch by hand (the site editor is easier)
 
 1. **Upload the files.** In the repository, open the `patches` folder → *Add file*
    → *Upload files*. Drag in your `.bps` file and any screenshots. Before
