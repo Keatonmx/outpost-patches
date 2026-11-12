@@ -66,6 +66,44 @@
     "note": "A fan project. Not affiliated with or endorsed by SEGA. Sonic Adventure 2, Sonic and Chao are trademarks of SEGA. Seasons runs on data from your own copy of the game, and no game files are distributed here."
   },
   {
+    "id": "hvac-trail",
+    "title": "The HVAC Trail",
+    "kind": "Game",
+    "platform": "iPhone",
+    "status": "Coming soon",
+    "summary": "One American summer. Five techs. 530 miles of service calls between you and Labor Day.",
+    "description": "The HVAC Trail is an Oregon Trail style survival game about running residential air conditioning calls through the hottest months of the year. Written by a working HVAC tech, tech to tech.\n\nPick who you are, stock the van at Big Lou's Supply House and hit the road. At every house you size up the unit, take readings or try an old trick, and make the call: a band-aid, or doing it right. Between calls, keep your crew of five hydrated and on their feet in the heat, all the way to Labor Day.",
+    "features": [
+      "Diagnose real faults from the data tag, meter, amp clamp and gauges, or an old trick",
+      "Start as an owner-operator, a senior tech or a first-year apprentice",
+      "Stock up at three supply houses and paint your own van",
+      "Big jobs along the route: a McMansion, a hoarder house, a mobile home park and a lake house rental",
+      "Game Center leaderboard and a Hall of Fame",
+      "EGA DOS pixel art",
+      "Plays offline, with no account to make"
+    ],
+    "cover": "/projects/hvac-trail/on-the-road.png",
+    "screenshots": [
+      "/projects/hvac-trail/on-the-road.png",
+      "/projects/hvac-trail/big-lous-supply.png",
+      "/projects/hvac-trail/mrs-hendersons-house.png",
+      "/projects/hvac-trail/spaghetti-junction.png",
+      "/projects/hvac-trail/summit-ridge-mcmansion.png",
+      "/projects/hvac-trail/hoarder-house.png",
+      "/projects/hvac-trail/route-9-bridge.png",
+      "/projects/hvac-trail/shady-acres.png",
+      "/projects/hvac-trail/lake-house.png",
+      "/projects/hvac-trail/labor-day.png"
+    ],
+    "note": "Coming soon to the App Store.",
+    "links": [
+      {
+        "label": "Support",
+        "url": "https://redfernsoutpost.com/hvac-trail/"
+      }
+    ]
+  },
+  {
     "id": "tinbox",
     "title": "Tinbox",
     "kind": "App",
