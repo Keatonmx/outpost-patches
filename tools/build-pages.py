@@ -239,7 +239,7 @@ def main():
     index = ROOT / "index.html"
     index.write_text(home_page(index.read_text(encoding="utf-8").replace("\r\n", "\n"), site), encoding="utf-8", newline="\n")
 
-    urls = [SITE, SITE + "patches.html"]
+    urls = [SITE, SITE + "patches.html", SITE + "hvac-trail/", SITE + "hvac-trail/privacy/", SITE + "tinbox/", SITE + "tinbox/privacy/"]
     urls += [SITE + "projects/" + pid + "/" for pid in built]
     urls += [SITE + "patch.html?id=" + str(p["id"]) for p in patches if PAGE_ID.fullmatch(str(p.get("id") or ""))]
     (ROOT / "sitemap.xml").write_text(

@@ -69,15 +69,17 @@
     "id": "tinbox",
     "title": "Tinbox",
     "kind": "App",
-    "platform": "iPhone · iPad",
-    "summary": "A Game Boy Advance emulator for iPhone and iPad, built on the mGBA core.",
-    "description": "Tinbox is a native iOS Game Boy Advance player, with a SwiftUI interface, Metal rendering and the accurate mGBA core underneath.\n\nIt keeps your library tidy, plays in portrait or landscape, and has save states, themes and skins.",
+    "platform": "iPhone",
+    "summary": "A free GBA, GB and GBC emulator for iPhone, built on the mGBA core. No ads, no accounts, no paid version.",
+    "description": "Tinbox is a native iOS emulator for GBA, GB and GBC games, with a SwiftUI interface, Metal rendering and the accurate mGBA core underneath.\n\nIt comes with two free homebrew games, keeps your library tidy, plays in portrait or landscape, and has save states, rewind, a Time Capsule that remembers your whole playthrough, a speedrun timer, RetroAchievements, themes and skins.",
     "features": [
       "mGBA core, rendered with Metal",
-      "Portrait and landscape play",
-      "Save states and a quick menu",
-      "Themes and skins",
-      "Bluetooth controller support"
+      "Save states, rewind and fast-forward",
+      "Time Capsule playthrough snapshots",
+      "Speedrun timer and RetroAchievements",
+      "Themes, skins and your own button layout",
+      "Bluetooth controller support",
+      "No ads, no accounts, nothing leaves your phone"
     ],
     "cover": "/projects/tinbox/icon.png",
     "coverStyle": "icon",
@@ -90,8 +92,17 @@
       "/projects/tinbox/03-landscape.jpg"
     ],
     "screenshotNote": "The game shown is Tobu Tobu Girl Deluxe, a free homebrew game.",
-    "note": "Tinbox doesn't come with any games. Play games you own or free homebrew.",
-    "links": []
+    "note": "Tinbox comes with two free homebrew games. Add games you own; it never downloads any.",
+    "links": [
+      {
+        "label": "Get it on the App Store",
+        "url": "https://apps.apple.com/app/id6809113803"
+      },
+      {
+        "label": "Support",
+        "url": "https://redfernsoutpost.com/tinbox/"
+      }
+    ]
   },
   {
     "id": "packmule",
