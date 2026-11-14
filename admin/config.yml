@@ -4,7 +4,7 @@
 
 backend:
   name: github
-  repo: Keatonmx/outpost-patches
+  repo: RedfernsOutpost/outpost-patches
   branch: main
   auth_methods: [token] # sign in with a GitHub access token; "Sign In with GitHub" would need an OAuth server
   commit_messages:
